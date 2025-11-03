@@ -1,6 +1,5 @@
 import React from 'react';
-
-export default function StrudelRepl() {
+function StrudelRepl() {
     return (
         <div className="repl-container mt-3">
             <label className="form-label">Strudel REPL (Processed Output):</label>
@@ -11,3 +10,5 @@ export default function StrudelRepl() {
         </div>
     );
 }
+
+export default StrudelRepl;
