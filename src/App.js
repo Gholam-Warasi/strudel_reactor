@@ -37,11 +37,6 @@ export default function App() {
         mute_drums: false, mute_bass: false, mute_chords: false, mute_lead: false,
         solo_drums: false, solo_bass: false, solo_chords: false, solo_lead: false,
 
-        // EQ controls (ui-only for now)
-        eq_low_drums: 0, eq_mid_drums: 0, eq_high_drums: 0,
-        eq_low_bass: 0, eq_mid_bass: 0, eq_high_bass: 0,
-        eq_low_chords: 0, eq_mid_chords: 0, eq_high_chords: 0,
-        eq_low_lead: 0, eq_mid_lead: 0, eq_high_lead: 0,
     });
 
     useEffect(() => {

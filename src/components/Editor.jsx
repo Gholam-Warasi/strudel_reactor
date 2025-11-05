@@ -24,6 +24,10 @@ function Editor({ value, onChange, strudelReplRef, controls, onPreprocess }) {
         // Make a shallow copy so we can mutate safely
         const c = { ...controlValues };
 
+        // Map FX controls: fx_x -> delay_send, fx_y -> reverb
+        c.delay_send = c.fx_x ?? 0.12;
+        c.reverb = c.fx_y ?? 0.15;
+
         // Parse/ensure numeric defaults (in case they are strings)
         const defaults = ['master_volume', 'reverb', 'delay_send', 'crossfader', 'tempo'];
         defaults.forEach(k => {
