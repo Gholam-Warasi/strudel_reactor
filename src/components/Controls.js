@@ -62,8 +62,8 @@ function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay, onSave
                     value={controls.basslines}
                     onChange={handleChange}
                 >
-                    <option value="0">Bassline 1</option>
-                    <option value="1">Bassline 2</option>
+                    <option value="0">Bassline Pattern 1 (Eb-F-G-F-Bb)</option>
+                    <option value="1">Bassline Pattern 2 (Eb-Bb-G-F-Bb-Eb-F)</option>
                 </select>
             </div>
 
@@ -77,8 +77,10 @@ function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay, onSave
                     value={controls.arpeggiators}
                     onChange={handleChange}
                 >
-                    <option value="0">Arp Pattern 1</option>
-                    <option value="1">Arp Pattern 2</option>
+                    <option value="0">Arp 1 (Standard)</option>
+                    <option value="1">Arp 2 (High Octave)</option>
+                    <option value="2">Arp 3 (Variation)</option>
+                    <option value="3">Arp 4 (Extended)</option>
                 </select>
             </div>
 
