@@ -1,5 +1,4 @@
-export const stranger_tune = `setcps(140/60/4)
-
+export const stranger_tune = `setcps(<tempo_control>/60/4)
 samples('github:algorave-dave/samples')
 samples('https://raw.githubusercontent.com/tidalcycles/Dirt-Samples/master/strudel.json')
 samples('https://raw.githubusercontent.com/Mittans/tidal-drum-machines/main/machines/tidal-drum-machines.json')
@@ -11,9 +10,9 @@ const gain_patterns = [
 ]
 
 const drum_structure = [
-"~",
-"x*4",
-"{x ~!9 x ~!5 x ~ x ~!7 x ~!3 < ~ x > ~}%16",
+ "~",
+ "x*4",
+ "{x ~!9 x ~!5 x ~ x ~!7 x ~!3 < ~ x > ~}%16",
 ]
 
 const basslines = [
@@ -22,42 +21,38 @@ const basslines = [
 ]
 
 const arpeggiator1 = [
-"{d4 bb3 eb3 d3 bb2 eb2}%16",
-"{c4 bb3 f3 c3 bb2 f2}%16",
-"{d4 bb3 g3 d3 bb2 g2}%16",
-"{c4 bb3 f3 c3 bb2 f2}%16",
+  "{d4 bb3 eb3 d3 bb2 eb2}%16",
+  "{c4 bb3 f3 c3 bb2 f2}%16",
+  "{d4 bb3 g3 d3 bb2 g2}%16",
+  "{c4 bb3 f3 c3 bb2 f2}%16",
 ]
 
 const arpeggiator2 = [
-"{d4 bb3 eb3 d3 bb2 eb2}%16",
-"{c4 bb3 f3 c3 bb2 f2}%16",
-"{d4 bb3 g3 d3 bb2 g2}%16",
-"{d5 bb4 g4 d4 bb3 g3 d4 bb3 eb3 d3 bb2 eb2}%16",
+  "{d4 bb3 eb3 d3 bb2 eb2}%16",
+  "{c4 bb3 f3 c3 bb2 f2}%16",
+  "{d4 bb3 g3 d3 bb2 g2}%16",
+  "{d5 bb4 g4 d4 bb3 g3 d4 bb3 eb3 d3 bb2 eb2}%16",
 ]
 
+const pattern = <drum_pattern_control>
 
-const pattern = 0
-const bass = 0
-
-bassline:
-note(pick(basslines, bass))
+<p1_Radio>bassline:
+note(pick(basslines, <bassline_control>))
 .sound("supersaw")
 .postgain(2)
-.room(0.6)
+.room(<reverb_control>)
 .lpf(700)
-.room(0.4)
-.postgain(pick(gain_patterns, pattern))
+.gain(<master_volume_control>)
 
-
-main_arp: 
-note(pick(arpeggiator1, "<0 1 2 3>/2"))
+<p1_Radio>main_arp: 
+note(pick(arpeggiator1, <arpeggiator_control>))
 .sound("supersaw")
 .lpf(300)
 .adsr("0:0:.5:.1")
-.room(0.6)
+.room(<reverb_control>)
 .lpenv(3.3)
 .postgain(pick(gain_patterns, pattern))
-
+.gain(<master_volume_control>)
 
 drums:
 stack(
@@ -66,16 +61,14 @@ stack(
   .pcurve(2)
   .pdec(1)
   .struct(pick(drum_structure, pattern)),
-
   s("sh").struct("[x!3 ~!2 x!10 ~]")
   .postgain(0.5).lpf(7000)
   .bank("RolandTR808")
   .speed(0.8).jux(rev).room(sine.range(0.1,0.4)).gain(0.6),
-
   s("{~ ~ rim ~ cp ~ rim cp ~!2 rim ~ cp ~ < rim ~ >!2}%8 *2")
   .bank("[KorgDDM110, OberheimDmx]").speed(1.2)
   .postgain(.25),
-)
+).gain(<master_volume_control>)
 
 drums2: 
 stack(
@@ -92,9 +85,9 @@ stack(
   .hpf(1000)
   .speed(0.5)
   .rarely(jux(rev)),
-)
+).gain(<master_volume_control>)
+
 //Remixed and reproduced from Algorave Dave's code found here: https://www.youtube.com/watch?v=ZCcpWzhekEY
 // all(x => x.gain(mouseX.range(0,1)))
-// all(x => x.log())
-
+all(x => x.log())
 // @version 1.2`;
