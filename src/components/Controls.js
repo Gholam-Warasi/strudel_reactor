@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay }) {
+function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay, onSave, onLoad }) {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -164,6 +164,22 @@ function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay }) {
                     value={controls.tempo}
                     onChange={handleChange}
                 />
+            </div>
+
+            {/* Save/Load */}
+            <div className="d-flex gap-2">
+                <button onClick={onSave} className="btn btn-outline-primary">
+                    Save Settings
+                </button>
+                <label className="btn btn-outline-secondary">
+                    Load Settings
+                    <input
+                        type="file"
+                        className="d-none"
+                        accept=".json"
+                        onChange={onLoad}
+                    />
+                </label>
             </div>
         </div>
     );
