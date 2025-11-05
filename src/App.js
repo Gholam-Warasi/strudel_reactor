@@ -5,6 +5,7 @@ import Editor from './components/Editor';
 import D3Graph from './components/D3Graph';
 import console_monkey_patch, { subscribe, unsubscribe } from './console-monkey-patch';
 import { jazzlike } from './tunes';
+import FileManager from './components/FileManager';
 
 export default function App() {
     const strudelReplRef = useRef(null);
@@ -19,12 +20,10 @@ export default function App() {
         reverb: 0.15,
         delay_send: 0.12,
         tempo: 110,
-
         gain_drums: 1.0,
         gain_bass: 0.9,
         gain_chords: 0.8,
         gain_lead: 0.7,
-
         mute_drums: false, mute_bass: false, mute_chords: false, mute_lead: false,
         solo_drums: false, solo_bass: false, solo_chords: false, solo_lead: false,
     });
@@ -36,56 +35,13 @@ export default function App() {
         return () => unsubscribe('d3Data', handleD3Data);
     }, []);
 
-    const handleSave = () => {
-        try {
-            const json = JSON.stringify(controls, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'strudel_settings.json';
-            link.click();
-            URL.revokeObjectURL(url);
-        } catch (err) {
-            console.error('Save failed', err);
-            alert('Error saving settings. See console for details.');
-        }
-    };
+    const triggerFileInput = () => fileInputRef.current?.click();
 
     const handleLoad = (e) => {
         const file = e?.target?.files?.[0];
-        if (!file) return;
-        setLoading(true);
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const loadedControls = JSON.parse(event.target.result);
-                setControls(prev => ({
-                    ...prev,
-                    ...Object.fromEntries(Object.entries(loadedControls).map(([k, v]) => {
-                        const numericKeys = [
-                            'master_volume', 'tempo', 'reverb', 'delay_send', 'crossfader',
-                            'gain_drums', 'gain_bass', 'gain_chords', 'gain_lead'
-                        ];
-                        if (numericKeys.includes(k)) {
-                            const parsed = parseFloat(v);
-                            return [k, Number.isNaN(parsed) ? v : parsed];
-                        }
-                        return [k, v];
-                    }))
-                }));
-            } catch (error) {
-                console.error('Failed to parse JSON:', error);
-                alert('Error: Could not load settings file. Is it valid JSON?');
-            } finally {
-                setLoading(false);
-                e.target.value = null;
-            }
-        };
-        reader.readAsText(file);
+        if (file)
+            FileManager.load(file, setControls, setLoading, () => (e.target.value = null));
     };
-
-    const triggerFileInput = () => fileInputRef.current?.click();
 
     return (
         <div className="app-root" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
@@ -100,7 +56,7 @@ export default function App() {
                             <Nav.Link href="#">Visualizer</Nav.Link>
                         </Nav>
                         <Form className="d-flex align-items-center gap-2">
-                            <Button variant="outline-secondary" size="sm" onClick={handleSave}>Save</Button>
+                            <Button variant="outline-secondary" size="sm" onClick={() => FileManager.save(controls)}>Save</Button>
                             <Button variant="outline-secondary" size="sm" onClick={triggerFileInput}>Load</Button>
                             <input ref={fileInputRef} type="file" accept="application/json" onChange={handleLoad} className="d-none" />
                         </Form>
@@ -140,8 +96,8 @@ export default function App() {
                                 <Controls
                                     controls={controls}
                                     setControls={setControls}
-                                    onSave={handleSave}
-                                    onLoad={(e) => handleLoad(e)}
+                                    onSave={() => FileManager.save(controls)}
+                                    onLoad={handleLoad}
                                 />
                             </div>
                         </div>
@@ -157,7 +113,6 @@ export default function App() {
                                 </div>
                             </div>
                         </div>
-
                     </Col>
                 </Row>
 
@@ -176,7 +131,9 @@ export default function App() {
                     </Col>
                 </Row>
 
-                <footer className="text-center text-muted mt-4">Built by Gholam {new Date().getFullYear()}</footer>
+                <footer className="text-center text-muted mt-4">
+                    Built by Gholam {new Date().getFullYear()}
+                </footer>
             </Container>
         </div>
     );
