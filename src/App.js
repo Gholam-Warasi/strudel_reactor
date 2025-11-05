@@ -52,6 +52,37 @@ export default function App() {
         handlePlay();
     };
 
+    // Save settings to JSON file
+    const handleSave = () => {
+        const json = JSON.stringify(controls);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'strudel_settings.json';
+        link.click();
+        URL.revokeObjectURL(url);
+    };
+
+    // Load settings from JSON file
+    const handleLoad = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const loadedControls = JSON.parse(event.target.result);
+                setControls(loadedControls);
+            } catch (error) {
+                console.error("Failed to parse JSON:", error);
+                alert("Error: Could not load settings file.");
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = null;
+    };
+
     return (
         <div className="App">
             <Container fluid className="p-3">
@@ -70,7 +101,8 @@ export default function App() {
                             onPlay={handlePlay}
                             onStop={handleStop}
                             onProcAndPlay={handleProcAndPlay}
-                            
+                            onSave={handleSave}
+                            onLoad={handleLoad}
                         />
                         <hr />
                         <div className="p-3 border rounded">
