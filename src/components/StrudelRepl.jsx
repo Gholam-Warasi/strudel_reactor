@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { StrudelMirror } from '@strudel/codemirror';
 import { evalScope } from '@strudel/core';
-// import { drawPianoroll } from '@strudel/draw'; // Removed
 import { initAudioOnFirstClick, getAudioContext, webaudioOutput, registerSynthSounds } from '@strudel/webaudio';
 import { registerSoundfonts } from '@strudel/soundfonts';
 import { transpiler } from '@strudel/transpiler';

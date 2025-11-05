@@ -45,5 +45,5 @@ stack(
   "[~ ~ ~ ~] [sd ~ ~ ~] [~ ~ ~ ~] [sd ~ ~ ~] ",
 ).s().slow(2)
 
-
+// crossfade helper comment (injected by preprocessor): crossfader applies between (drums+bass) and (chords+lead)
 `;
