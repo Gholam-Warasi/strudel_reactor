@@ -98,6 +98,43 @@ function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay }) {
                 </select>
             </div>
 
+            <hr />
+
+            {/* Master Volume */}
+            <div className="mb-3">
+                <label htmlFor="master_volume" className="form-label">
+                    Master Volume: {controls.master_volume}
+                </label>
+                <input
+                    type="range"
+                    className="form-range"
+                    min="0"
+                    max="1.5"
+                    step="0.01"
+                    id="master_volume"
+                    name="master_volume"
+                    value={controls.master_volume}
+                    onChange={handleChange}
+                />
+            </div>
+
+            {/* Reverb */}
+            <div className="mb-3">
+                <label htmlFor="reverb" className="form-label">
+                    Reverb: {controls.reverb}
+                </label>
+                <input
+                    type="range"
+                    className="form-range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    id="reverb"
+                    name="reverb"
+                    value={controls.reverb}
+                    onChange={handleChange}
+                />
+            </div>
         </div>
     );
 }
