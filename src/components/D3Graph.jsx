@@ -4,37 +4,32 @@ import * as d3 from 'd3';
 const D3Graph = ({ data }) => {
     const svgRef = useRef(null);
     const containerRef = useRef(null);
-    const [history, setHistory] = useState([]);
+    const [peaks, setPeaks] = useState({ drums: 0, bass: 0, chords: 0, lead: 0 });
+    const animationRef = useRef(null);
 
     useEffect(() => {
         if (!data || data.length === 0) return;
 
-        // Parse current data
-        const currentValues = {};
+        // Parse current data and update peaks
+        const newPeaks = { drums: 0, bass: 0, chords: 0, lead: 0 };
         data.forEach(entry => {
             if (typeof entry !== 'string') return;
             const match = entry.match(/(\w+):([\d.]+)/);
             if (match) {
-                currentValues[match[1]] = parseFloat(match[2]);
+                newPeaks[match[1]] = parseFloat(match[2]);
             }
         });
 
-        // Add to history (keep last 50 snapshots)
-        setHistory(prev => {
-            const newHistory = [...prev, { timestamp: Date.now(), values: currentValues }];
-            return newHistory.slice(-50);
-        });
+        setPeaks(newPeaks);
     }, [data]);
 
     useEffect(() => {
-        if (history.length === 0) return;
-
         const container = containerRef.current;
         if (!container) return;
 
         const width = container.clientWidth || 600;
-        const height = 350;
-        const margin = { top: 30, right: 20, bottom: 50, left: 60 };
+        const height = 400;
+        const margin = { top: 40, right: 20, bottom: 20, left: 20 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
@@ -57,30 +52,15 @@ const D3Graph = ({ data }) => {
             'lead': '#f39c12'
         };
 
-        // Prepare data for each channel
-        const channelData = channels.map(channel => ({
-            channel,
-            values: history.map((snapshot, i) => ({
-                index: i,
-                value: snapshot.values[channel] || 0,
-                timestamp: snapshot.timestamp
-            }))
-        }));
+        const channelWidth = innerWidth / channels.length;
+        const barWidth = channelWidth * 0.7;
+        const spacing = channelWidth * 0.15;
 
-        // Scales
-        const xScale = d3.scaleLinear()
-            .domain([0, Math.max(49, history.length - 1)])
-            .range([0, innerWidth]);
-
-        const yScale = d3.scaleLinear()
-            .domain([0, 1])
-            .range([innerHeight, 0]);
-
-        // Add gradient definitions
+        // Add gradients for each channel
         const defs = svg.append('defs');
         channels.forEach(channel => {
             const gradient = defs.append('linearGradient')
-                .attr('id', `gradient-${channel}`)
+                .attr('id', `bar-gradient-${channel}`)
                 .attr('x1', '0%')
                 .attr('x2', '0%')
                 .attr('y1', '0%')
@@ -88,174 +68,168 @@ const D3Graph = ({ data }) => {
 
             gradient.append('stop')
                 .attr('offset', '0%')
-                .attr('stop-color', colorScale[channel])
-                .attr('stop-opacity', 0.6);
+                .attr('stop-color', d3.color(colorScale[channel]).brighter(0.5))
+                .attr('stop-opacity', 1);
 
             gradient.append('stop')
                 .attr('offset', '100%')
                 .attr('stop-color', colorScale[channel])
-                .attr('stop-opacity', 0.1);
+                .attr('stop-opacity', 1);
+
+            // Glow filter
+            const filter = defs.append('filter')
+                .attr('id', `glow-${channel}`)
+                .attr('x', '-50%')
+                .attr('y', '-50%')
+                .attr('width', '200%')
+                .attr('height', '200%');
+
+            filter.append('feGaussianBlur')
+                .attr('stdDeviation', '4')
+                .attr('result', 'coloredBlur');
+
+            const feMerge = filter.append('feMerge');
+            feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+            feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
         });
 
-        // Grid
-        g.append('g')
-            .attr('class', 'grid')
-            .attr('opacity', 0.15)
-            .call(d3.axisLeft(yScale)
-                .ticks(5)
-                .tickSize(-innerWidth)
-                .tickFormat('')
-            );
+        // Scale
+        const yScale = d3.scaleLinear()
+            .domain([0, 1])
+            .range([innerHeight, 0]);
 
-        // Axes
-        g.append('g')
-            .attr('class', 'x-axis')
-            .attr('transform', `translate(0,${innerHeight})`)
-            .call(d3.axisBottom(xScale).ticks(5))
-            .style('font-size', '11px');
+        // Draw background bars (track outline)
+        channels.forEach((channel, i) => {
+            const x = i * channelWidth + spacing;
 
-        g.append('g')
-            .attr('class', 'y-axis')
-            .call(d3.axisLeft(yScale).ticks(5).tickFormat(d => d.toFixed(1)))
-            .style('font-size', '11px');
+            // Background track
+            g.append('rect')
+                .attr('x', x)
+                .attr('y', 0)
+                .attr('width', barWidth)
+                .attr('height', innerHeight)
+                .attr('fill', '#2c3e50')
+                .attr('opacity', 0.2)
+                .attr('rx', 8);
 
-        // Axis labels
-        g.append('text')
-            .attr('x', innerWidth / 2)
-            .attr('y', innerHeight + 40)
-            .attr('text-anchor', 'middle')
-            .style('font-size', '12px')
-            .style('fill', '#666')
-            .text('Time →');
-
-        g.append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('x', -innerHeight / 2)
-            .attr('y', -45)
-            .attr('text-anchor', 'middle')
-            .style('font-size', '12px')
-            .style('fill', '#666')
-            .text('Gain Level');
-
-        // Area generator
-        const area = d3.area()
-            .x(d => xScale(d.index))
-            .y0(innerHeight)
-            .y1(d => yScale(d.value))
-            .curve(d3.curveCatmullRom);
-
-        // Line generator
-        const line = d3.line()
-            .x(d => xScale(d.index))
-            .y(d => yScale(d.value))
-            .curve(d3.curveCatmullRom);
-
-        // Draw areas and lines
-        channelData.forEach(({ channel, values }) => {
-            if (values.length === 0) return;
-
-            // Draw filled area
-            g.append('path')
-                .datum(values)
-                .attr('fill', `url(#gradient-${channel})`)
-                .attr('d', area)
-                .attr('opacity', 0.6);
-
-            // Draw line
-            g.append('path')
-                .datum(values)
-                .attr('fill', 'none')
-                .attr('stroke', colorScale[channel])
-                .attr('stroke-width', 2.5)
-                .attr('d', line);
-
-            // Add glow effect to current point
-            const lastPoint = values[values.length - 1];
-            if (lastPoint) {
-                g.append('circle')
-                    .attr('cx', xScale(lastPoint.index))
-                    .attr('cy', yScale(lastPoint.value))
-                    .attr('r', 6)
-                    .attr('fill', colorScale[channel])
-                    .attr('opacity', 0.3);
-
-                g.append('circle')
-                    .attr('cx', xScale(lastPoint.index))
-                    .attr('cy', yScale(lastPoint.value))
-                    .attr('r', 4)
-                    .attr('fill', colorScale[channel])
-                    .attr('stroke', '#fff')
-                    .attr('stroke-width', 2);
+            // Grid lines inside track
+            for (let j = 0; j <= 10; j++) {
+                g.append('line')
+                    .attr('x1', x)
+                    .attr('x2', x + barWidth)
+                    .attr('y1', (innerHeight / 10) * j)
+                    .attr('y2', (innerHeight / 10) * j)
+                    .attr('stroke', '#95a5a6')
+                    .attr('stroke-width', 1)
+                    .attr('opacity', 0.2);
             }
         });
 
-        // Legend with current values
-        const legend = g.append('g')
-            .attr('class', 'legend')
-            .attr('transform', `translate(10, -20)`);
-
-        const latestValues = history[history.length - 1]?.values || {};
-
+        // Draw peak indicators and bars
         channels.forEach((channel, i) => {
-            const legendRow = legend.append('g')
-                .attr('transform', `translate(${i * (innerWidth / 4)}, 0)`);
+            const x = i * channelWidth + spacing;
+            const value = peaks[channel] || 0;
+            const barHeight = innerHeight * value;
 
-            legendRow.append('circle')
-                .attr('cx', 0)
-                .attr('cy', 0)
-                .attr('r', 6)
-                .attr('fill', colorScale[channel]);
+            // Animated bar group
+            const barGroup = g.append('g')
+                .attr('class', `bar-${channel}`);
 
-            legendRow.append('text')
-                .attr('x', 12)
-                .attr('y', 4)
-                .style('font-size', '12px')
+            // Main bar
+            barGroup.append('rect')
+                .attr('x', x)
+                .attr('y', innerHeight - barHeight)
+                .attr('width', barWidth)
+                .attr('height', barHeight)
+                .attr('fill', `url(#bar-gradient-${channel})`)
+                .attr('filter', `url(#glow-${channel})`)
+                .attr('rx', 8);
+
+            // Peak indicator line
+            if (value > 0.05) {
+                barGroup.append('rect')
+                    .attr('x', x - 5)
+                    .attr('y', innerHeight - barHeight - 3)
+                    .attr('width', barWidth + 10)
+                    .attr('height', 6)
+                    .attr('fill', colorScale[channel])
+                    .attr('opacity', 0.8)
+                    .attr('rx', 3);
+            }
+
+            // Value text on top
+            barGroup.append('text')
+                .attr('x', x + barWidth / 2)
+                .attr('y', Math.max(20, innerHeight - barHeight - 15))
+                .attr('text-anchor', 'middle')
+                .style('font-size', '18px')
+                .style('font-weight', '700')
+                .style('fill', colorScale[channel])
+                .style('text-shadow', '0 0 10px rgba(0,0,0,0.5)')
+                .text((value * 100).toFixed(0) + '%');
+
+            // Channel label at bottom
+            g.append('text')
+                .attr('x', x + barWidth / 2)
+                .attr('y', innerHeight + 18)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '14px')
                 .style('font-weight', '600')
                 .style('fill', colorScale[channel])
-                .style('text-transform', 'capitalize')
+                .style('text-transform', 'uppercase')
                 .text(channel);
 
-            legendRow.append('text')
-                .attr('x', 12)
-                .attr('y', 4)
-                .attr('dx', channel.length * 7)
+            // Exact value below label
+            g.append('text')
+                .attr('x', x + barWidth / 2)
+                .attr('y', innerHeight + 35)
+                .attr('text-anchor', 'middle')
                 .style('font-size', '11px')
-                .style('fill', '#666')
-                .text(` ${(latestValues[channel] || 0).toFixed(3)}`);
+                .style('fill', '#7f8c8d')
+                .text(value.toFixed(3));
         });
 
         // Title
         svg.append('text')
             .attr('x', width / 2)
-            .attr('y', 15)
+            .attr('y', 25)
             .attr('text-anchor', 'middle')
-            .style('font-size', '14px')
-            .style('font-weight', '600')
-            .style('fill', '#333')
-            .text('Channel Gain History');
+            .style('font-size', '16px')
+            .style('font-weight', '700')
+            .style('fill', '#2c3e50')
+            .text('LIVE CHANNEL METERS');
 
-    }, [history]);
+    }, [peaks]);
 
     return (
-        <div ref={containerRef} style={{ width: '100%', overflow: 'hidden' }}>
+        <div ref={containerRef} style={{
+            width: '100%',
+            overflow: 'hidden',
+            backgroundColor: '#ecf0f1',
+            borderRadius: '8px',
+            padding: '10px'
+        }}>
             <svg ref={svgRef} style={{ display: 'block', width: '100%' }}></svg>
-            {history.length === 0 && (
+            {Object.values(peaks).every(v => v === 0) && (
                 <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
                     textAlign: 'center',
-                    padding: '60px 20px',
-                    color: '#999',
+                    padding: '40px',
+                    color: '#95a5a6',
                     fontStyle: 'italic',
-                    border: '2px dashed #ddd',
+                    backgroundColor: 'rgba(255,255,255,0.9)',
                     borderRadius: '8px',
-                    backgroundColor: '#fafafa',
-                    margin: '20px 0'
+                    pointerEvents: 'none'
                 }}>
-                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>🎵</div>
-                    <div style={{ fontSize: '14px', fontWeight: '500' }}>
-                        Waiting for audio data...
+                    <div style={{ fontSize: '48px', marginBottom: '10px' }}></div>
+                    <div style={{ fontSize: '14px', fontWeight: '600' }}>
+                        Waiting for audio...
                     </div>
                     <div style={{ fontSize: '12px', marginTop: '5px' }}>
-                        Adjust controls to see the visualization
+                        Adjust mixer controls to see meters
                     </div>
                 </div>
             )}
