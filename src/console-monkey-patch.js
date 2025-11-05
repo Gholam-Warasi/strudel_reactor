@@ -33,7 +33,6 @@ export default function console_monkey_patch() {
             const match = message.match(/(\w+):([\d.]+)/);
             if (match) {
                 const cleanMessage = `${match[1]}:${match[2]}`;
-                
 
                 logArray.push(cleanMessage);
                 if (logArray.length > 100) {
