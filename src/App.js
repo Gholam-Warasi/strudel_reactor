@@ -12,6 +12,7 @@ import D3Graph from './components/D3Graph';
 export default function App() {
     const strudelReplRef = useRef(null);
     const [editorCode, setEditorCode] = useState(stranger_tune);
+    const [d3Data, setD3Data] = useState([]);
     const [controls, setControls] = useState({
         p1: 'on',
         basslines: '0',
@@ -22,6 +23,17 @@ export default function App() {
         drum_pattern: '0',
         reverb: '0.1'
     });
+
+    // Initialize D3 data listener
+    useEffect(() => {
+        const handleD3Data = (event) => setD3Data(event.detail);
+
+        console_monkey_patch();
+        subscribe('d3Data', handleD3Data);
+        runPreprocessing(stranger_tune, controls);
+
+        return () => unsubscribe('d3Data', handleD3Data);
+    }, []);
 
     // Process code with control values
     const runPreprocessing = (code, controlValues) => {
@@ -107,7 +119,7 @@ export default function App() {
                         <hr />
                         <div className="p-3 border rounded">
                             <h4>Live Log Graph</h4>
-                            />
+                            <D3Graph data={d3Data} />
                         </div>
                     </Col>
                 </Row>
