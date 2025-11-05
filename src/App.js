@@ -1,158 +1,85 @@
-import './App.css';
-import { useEffect, useRef } from "react";
-import { StrudelMirror } from '@strudel/codemirror';
-import { evalScope } from '@strudel/core';
-import { drawPianoroll } from '@strudel/draw';
-import { initAudioOnFirstClick } from '@strudel/webaudio';
-import { transpiler } from '@strudel/transpiler';
-import { getAudioContext, webaudioOutput, registerSynthSounds } from '@strudel/webaudio';
-import { registerSoundfonts } from '@strudel/soundfonts';
+﻿import './App.css';
+import React, { useState, useEffect, useRef } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+
 import { stranger_tune } from './tunes';
-import console_monkey_patch, { getD3Data } from './console-monkey-patch';
+import console_monkey_patch, { subscribe, unsubscribe } from './console-monkey-patch';
+import Controls from './components/Controls';
+import Editor from './components/Editor';
+import StrudelRepl from './components/StrudelRepl';
+import D3Graph from './components/D3Graph';
 
-let globalEditor = null;
+export default function App() {
+    const strudelReplRef = useRef(null);
+    const [editorCode, setEditorCode] = useState(stranger_tune);
+    const [controls, setControls] = useState({
+        p1: 'on',
+        basslines: '0',
+        arpeggiators: '0',
+        master_volume: '0.8',
+        show_drums2: false,
+        tempo: '120',
+        drum_pattern: '0',
+        reverb: '0.1'
+    });
 
-const handleD3Data = (event) => {
-    console.log(event.detail);
-};
+    // Process code with control values
+    const runPreprocessing = (code, controlValues) => {
+        if (!strudelReplRef.current) return;
 
-export function SetupButtons() {
+        let processed = code
+            .replaceAll('<p1_Radio>', controlValues.p1 === 'hush' ? '_' : '')
+            .replaceAll('<bassline_control>', controlValues.basslines)
+            .replaceAll('<arpeggiator_control>', controlValues.arpeggiators)
+            .replaceAll('<master_volume_control>', controlValues.master_volume)
+            .replaceAll('<tempo_control>', controlValues.tempo)
+            .replaceAll('<drum_pattern_control>', controlValues.drum_pattern)
+            .replaceAll('<reverb_control>', controlValues.reverb);
 
-    document.getElementById('play').addEventListener('click', () => globalEditor.evaluate());
-    document.getElementById('stop').addEventListener('click', () => globalEditor.stop());
-    document.getElementById('process').addEventListener('click', () => {
-        Proc()
-    }
-    )
-    document.getElementById('process_play').addEventListener('click', () => {
-        if (globalEditor != null) {
-            Proc()
-            globalEditor.evaluate()
-        }
-    }
-    )
-}
+        // Handle drums2 visibility
+        processed = controlValues.show_drums2
+            ? processed.replace('// drums2: (disabled)\n', 'drums2:\n')
+            : processed.replace(/drums2:([\s\S]*?)(?=\n\w+:|\n\/\/|\nall\()/g, '// drums2: (disabled)\n');
 
+        strudelReplRef.current.setCode(processed);
+    };
 
+    // Playback controls
+    const handlePlay = () => strudelReplRef.current?.evaluate();
+    const handleStop = () => strudelReplRef.current?.stop();
+    const handleProcAndPlay = () => {
+        runPreprocessing(editorCode, controls);
+        handlePlay();
+    };
 
-export function ProcAndPlay() {
-    if (globalEditor != null && globalEditor.repl.state.started == true) {
-        console.log(globalEditor)
-        Proc()
-        globalEditor.evaluate();
-    }
-}
+    return (
+        <div className="App">
+            <Container fluid className="p-3">
+                <h2 className="text-center mb-4">Strudel Preprocessor</h2>
+                <Row>
+                    <Col md={7}>
+                        <Editor value={editorCode} onChange={(e) => setEditorCode(e.target.value)} />
+                        <hr />
+                        <StrudelRepl ref={strudelReplRef} />
+                    </Col>
 
-export function Proc() {
-
-    let proc_text = document.getElementById('proc').value
-    let proc_text_replaced = proc_text.replaceAll('<p1_Radio>', ProcessText);
-    ProcessText(proc_text);
-    globalEditor.setCode(proc_text_replaced)
-}
-
-export function ProcessText(match, ...args) {
-
-    let replace = ""
-    if (document.getElementById('flexRadioDefault2').checked) {
-        replace = "_"
-    }
-
-    return replace
-}
-
-export default function StrudelDemo() {
-
-const hasRun = useRef(false);
-
-useEffect(() => {
-
-    if (!hasRun.current) {
-        document.addEventListener("d3Data", handleD3Data);
-        console_monkey_patch();
-        hasRun.current = true;
-        //Code copied from example: https://codeberg.org/uzu/strudel/src/branch/main/examples/codemirror-repl
-            //init canvas
-            const canvas = document.getElementById('roll');
-            canvas.width = canvas.width * 2;
-            canvas.height = canvas.height * 2;
-            const drawContext = canvas.getContext('2d');
-            const drawTime = [-2, 2]; // time window of drawn haps
-            globalEditor = new StrudelMirror({
-                defaultOutput: webaudioOutput,
-                getTime: () => getAudioContext().currentTime,
-                transpiler,
-                root: document.getElementById('editor'),
-                drawTime,
-                onDraw: (haps, time) => drawPianoroll({ haps, time, ctx: drawContext, drawTime, fold: 0 }),
-                prebake: async () => {
-                    initAudioOnFirstClick(); // needed to make the browser happy (don't await this here..)
-                    const loadModules = evalScope(
-                        import('@strudel/core'),
-                        import('@strudel/draw'),
-                        import('@strudel/mini'),
-                        import('@strudel/tonal'),
-                        import('@strudel/webaudio'),
-                    );
-                    await Promise.all([loadModules, registerSynthSounds(), registerSoundfonts()]);
-                },
-            });
-            
-        document.getElementById('proc').value = stranger_tune
-        SetupButtons()
-        Proc()
-    }
-
-}, []);
-
-
-return (
-    <div>
-        <h2>Strudel Demo</h2>
-        <main>
-
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-8" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
-                        <label htmlFor="exampleFormControlTextarea1" className="form-label">Text to preprocess:</label>
-                        <textarea className="form-control" rows="15" id="proc" ></textarea>
-                    </div>
-                    <div className="col-md-4">
-
-                        <nav>
-                            <button id="process" className="btn btn-outline-primary">Preprocess</button>
-                            <button id="process_play" className="btn btn-outline-primary">Proc & Play</button>
-                            <br />
-                            <button id="play" className="btn btn-outline-primary">Play</button>
-                            <button id="stop" className="btn btn-outline-primary">Stop</button>
-                        </nav>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-8" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
-                        <div id="editor" />
-                        <div id="output" />
-                    </div>
-                    <div className="col-md-4">
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" onChange={ProcAndPlay} defaultChecked />
-                            <label className="form-check-label" htmlFor="flexRadioDefault1">
-                                p1: ON
-                            </label>
+                    <Col md={5}>
+                        <Controls
+                            controls={controls}
+                            setControls={setControls}
+                            onPlay={handlePlay}
+                            onStop={handleStop}
+                            onProcAndPlay={handleProcAndPlay}
+                            
+                        />
+                        <hr />
+                        <div className="p-3 border rounded">
+                            <h4>Live Log Graph</h4>
+                            />
                         </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" onChange={ProcAndPlay} />
-                            <label className="form-check-label" htmlFor="flexRadioDefault2">
-                                p1: HUSH
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <canvas id="roll"></canvas>
-        </main >
-    </div >
-);
-
-
+                    </Col>
+                </Row>
+            </Container>
+        </div>
+    );
 }
