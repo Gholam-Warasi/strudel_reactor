@@ -135,6 +135,36 @@ function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay }) {
                     onChange={handleChange}
                 />
             </div>
+
+            {/* Enable Drums 2 */}
+            <div className="form-check mb-3">
+                <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="show_drums2"
+                    name="show_drums2"
+                    checked={controls.show_drums2}
+                    onChange={handleChange}
+                />
+                <label className="form-check-label" htmlFor="show_drums2">
+                    Enable Drums 2
+                </label>
+            </div>
+
+            <hr />
+
+            {/* Tempo */}
+            <div className="mb-3">
+                <label htmlFor="tempo" className="form-label">Tempo (BPM)</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    id="tempo"
+                    name="tempo"
+                    value={controls.tempo}
+                    onChange={handleChange}
+                />
+            </div>
         </div>
     );
 }
