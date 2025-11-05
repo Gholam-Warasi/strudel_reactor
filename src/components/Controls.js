@@ -51,6 +51,39 @@ function Controls({ controls, setControls, onPlay, onStop, onProcAndPlay }) {
                     <label className="form-check-label" htmlFor="p1-hush">HUSH</label>
                 </div>
             </div>
+
+            {/* Bassline */}
+            <div className="mb-3">
+                <label htmlFor="basslines" className="form-label">Bassline</label>
+                <select
+                    className="form-select"
+                    id="basslines"
+                    name="basslines"
+                    value={controls.basslines}
+                    onChange={handleChange}
+                >
+                    <option value="0">Bassline 1</option>
+                    <option value="1">Bassline 2</option>
+                </select>
+            </div>
+
+            {/* Arpeggiator */}
+            <div className="mb-3">
+                <label htmlFor="arpeggiators" className="form-label">Arpeggiator</label>
+                <select
+                    className="form-select"
+                    id="arpeggiators"
+                    name="arpeggiators"
+                    value={controls.arpeggiators}
+                    onChange={handleChange}
+                >
+                    <option value="0">Arp Pattern 1</option>
+                    <option value="1">Arp Pattern 2</option>
+                </select>
+            </div>
+
+
+
         </div>
     );
 }
