@@ -6,7 +6,6 @@ import { stranger_tune } from './tunes';
 import console_monkey_patch, { subscribe, unsubscribe } from './console-monkey-patch';
 import Controls from './components/Controls';
 import Editor from './components/Editor';
-import StrudelRepl from './components/StrudelRepl';
 import D3Graph from './components/D3Graph';
 
 export default function App() {
@@ -24,7 +23,6 @@ export default function App() {
         reverb: '0.1'
     });
 
-    // Initialize D3 data listener
     useEffect(() => {
         const handleD3Data = (event) => setD3Data(event.detail);
 
@@ -35,7 +33,6 @@ export default function App() {
         return () => unsubscribe('d3Data', handleD3Data);
     }, []);
 
-    // Process code with control values
     const runPreprocessing = (code, controlValues) => {
         if (!strudelReplRef.current) return;
 
@@ -48,7 +45,6 @@ export default function App() {
             .replaceAll('<drum_pattern_control>', controlValues.drum_pattern)
             .replaceAll('<reverb_control>', controlValues.reverb);
 
-        // Handle drums2 visibility
         processed = controlValues.show_drums2
             ? processed.replace('// drums2: (disabled)\n', 'drums2:\n')
             : processed.replace(/drums2:([\s\S]*?)(?=\n\w+:|\n\/\/|\nall\()/g, '// drums2: (disabled)\n');
@@ -56,15 +52,8 @@ export default function App() {
         strudelReplRef.current.setCode(processed);
     };
 
-    // Playback controls
-    const handlePlay = () => strudelReplRef.current?.evaluate();
-    const handleStop = () => strudelReplRef.current?.stop();
-    const handleProcAndPlay = () => {
-        runPreprocessing(editorCode, controls);
-        handlePlay();
-    };
+    const handlePreprocess = () => runPreprocessing(editorCode, controls);
 
-    // Save settings to JSON file
     const handleSave = () => {
         const json = JSON.stringify(controls);
         const blob = new Blob([json], { type: 'application/json' });
@@ -76,7 +65,6 @@ export default function App() {
         URL.revokeObjectURL(url);
     };
 
-    // Load settings from JSON file
     const handleLoad = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -101,18 +89,19 @@ export default function App() {
                 <h2 className="text-center mb-4">Strudel Preprocessor</h2>
                 <Row>
                     <Col md={7}>
-                        <Editor value={editorCode} onChange={(e) => setEditorCode(e.target.value)} />
-                        <hr />
-                        <StrudelRepl ref={strudelReplRef} />
+                        <Editor
+                            value={editorCode}
+                            onChange={(e) => setEditorCode(e.target.value)}
+                            strudelReplRef={strudelReplRef}
+                            controls={controls}
+                            onPreprocess={handlePreprocess}
+                        />
                     </Col>
 
                     <Col md={5}>
                         <Controls
                             controls={controls}
                             setControls={setControls}
-                            onPlay={handlePlay}
-                            onStop={handleStop}
-                            onProcAndPlay={handleProcAndPlay}
                             onSave={handleSave}
                             onLoad={handleLoad}
                         />
