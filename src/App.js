@@ -50,11 +50,6 @@ export default function App() {
                     <Navbar.Brand href="#">Strudel Preprocessor</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="#">Editor</Nav.Link>
-                            <Nav.Link href="#">Mixer</Nav.Link>
-                            <Nav.Link href="#">Visualizer</Nav.Link>
-                        </Nav>
                         <Form className="d-flex align-items-center gap-2">
                             <Button variant="outline-secondary" size="sm" onClick={() => FileManager.save(controls)}>Save</Button>
                             <Button variant="outline-secondary" size="sm" onClick={triggerFileInput}>Load</Button>
@@ -115,22 +110,6 @@ export default function App() {
                         </div>
                     </Col>
                 </Row>
-
-                <Row>
-                    <Col>
-                        <div className="card shadow-sm mt-3">
-                            <div className="card-body small text-muted">
-                                <strong>Quick Tips:</strong>
-                                <ul className="mb-0 ms-3">
-                                    <li>Use the crossfader to smoothly blend instruments.</li>
-                                    <li>Adjust reverb and delay to create ambience.</li>
-                                    <li>Save presets to re-use favourite mixes.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </Col>
-                </Row>
-
                 <footer className="text-center text-muted mt-4">
                     Built by Gholam {new Date().getFullYear()}
                 </footer>

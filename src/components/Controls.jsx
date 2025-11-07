@@ -26,7 +26,7 @@ function Controls({ controls, setControls, onSave, onLoad }) {
 
     return (
         <div className="p-3 border rounded">
-            <h4>Mixer Controls (simple)</h4>
+            <h4>Mixer Controls</h4>
 
             <div className="mb-3">
                 <label className="form-label">Crossfader: {controls.crossfader.toFixed(2)}</label>

@@ -53,10 +53,13 @@ note(pick(["~ e5 ~ ~ ~ c5 ~ d5","~ e6 ~ ~ c6 ~ d6 ~"], <arpeggiator_control>))
 // Optional second drum layer (toggled by show_drums2)
 drums2:
 stack(
-  "[bd ~ ~ ~] [~ ~ ~ ~] [~ ~ bd ~] [~ ~ bd ~] ",
-  "[hh ~ hh ~] [hh ~ hh ~] [hh ~ hh ~] [hh ~ hh ~] ",
-  "[~ ~ ~ ~] [sd ~ ~ ~] [~ ~ ~ ~] [sd ~ ~ ~] ",
+  "[bd ~ ~ ~] [~ ~ ~ ~] [bd ~ ~ ~] [~ ~ ~ ~] ",
+  "[hh ~ hh hh] [hh ~ hh ~] [hh ~ hh ~] [hh ~ hh ~] ",
+  "[~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [lt ~ lt ~] ",
+  "[~ ~ ~ ~] [~ ~ ~ ~] [~ ~ mt ~] [~ ~ ~ ~] ",
+  "[~ ~ ~ rim] [~ ~ rim ~] [~ ~ ~ ~] [~ ~ ~ ~] ",
 ).s().slow(2)
+
 
 // crossfade helper comment (injected by preprocessor): crossfader applies between (drums+bass) and (chords+lead)
 `;
