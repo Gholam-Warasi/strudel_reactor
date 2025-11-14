@@ -30,15 +30,16 @@ function detectChannel(logText) {
         return 'lead';
     }
 
+    // Bass: lower notes (octaves 1-3) or bass synths
+    if (octave <= 3 || logText.includes('s:bass') || logText.includes('s:sub')) {
+        return 'bass';
+    }
+
     // Chords: supersaw or sawtooth in middle range
     if (logText.includes('s:supersaw') || logText.includes('s:sawtooth')) {
         return 'chords';
     }
 
-    // Bass: lower notes (octaves 1-3) or bass synths
-    if (octave <= 3 || logText.includes('s:bass') || logText.includes('s:sub')) {
-        return 'bass';
-    }
 
     // Octave 4 defaults to chords
     if (octave === 4) {
