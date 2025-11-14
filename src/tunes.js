@@ -21,19 +21,17 @@ note(pick(["<eb1 eb2 eb3 eb2>/8","<f2 f3 f2 f1>/8"], <bassline_control>))
 .legato(0.5)
 .gain(<gain_bass> * <master_volume_control>)
 .room(<reverb_control>)
-.log("bass:<gain_bass>")
 <mute_bass>
 
 // CHORDS
 <mute_chords>chords:
 note("<[c3,eb3,g3] [f3,ab3,c4] [g3,bb3,d4] [eb3,g3,bb3]>")
-.sound("sawtooth")
+.sound("supersaw")
 .cutoff(800)
 .resonance(0.3)
 .legato(0.8)
 .gain(<gain_chords> * <master_volume_control>)
 .room(<reverb_control>)
-.log("chords:<gain_chords>")
 <mute_chords>
 
 // LEAD / MELODY
@@ -47,7 +45,6 @@ note(pick(["~ e5 ~ ~ ~ c5 ~ d5","~ e6 ~ ~ c6 ~ d6 ~"], <arpeggiator_control>))
 .delaytime(0.375)
 .delayfeedback(0.45)
 .room(<reverb_control>)
-.log("lead:<gain_lead>")
 <mute_lead>
 
 // Optional second drum layer (toggled by show_drums2)
@@ -60,6 +57,6 @@ stack(
   "[~ ~ ~ rim] [~ ~ rim ~] [~ ~ ~ ~] [~ ~ ~ ~] ",
 ).s().slow(2)
 
+.log()
 
-// crossfade helper comment (injected by preprocessor): crossfader applies between (drums+bass) and (chords+lead)
 `;

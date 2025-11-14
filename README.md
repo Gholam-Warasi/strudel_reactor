@@ -68,3 +68,16 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### `Key Musical Differences`: Based on effans work
+
+New key: D minor instead of C minor for a slightly darker feel
+Different tempo: 120 BPM vs 128 BPM - a touch slower and groovier
+Reimagined chord progression: Dm-F-C-G with different timing patterns
+New lead sounds: Using gm_lead_5_charang for a more ethereal quality
+Altered melody patterns: Reworked note sequences and rhythms
+Modified bass groove: Different syncopation and note placement
+Pad texture: Changed to gm_pad_2_warm for atmospheric warmth
+Adjusted effects: Different delay times, reverb levels, and filter settings
+New drum patterns: Restructured kick, snare, and hi-hat arrangements
