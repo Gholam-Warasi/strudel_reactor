@@ -26,6 +26,7 @@ export default function App() {
         gain_lead: 0.7,
         mute_drums: false, mute_bass: false, mute_chords: false, mute_lead: false,
         solo_drums: false, solo_bass: false, solo_chords: false, solo_lead: false,
+        show_drums2: false,
     });
 
     useEffect(() => {

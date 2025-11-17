@@ -97,7 +97,7 @@ function Editor({ value, onChange, strudelReplRef, controls, onPreprocess }) {
         // Toggle drums2 block
         processed = c.show_drums2
             ? processed.replace('// drums2: (disabled)\n', 'drums2:\n')
-            : processed.replace(/drums2:([\s\S]*?)(?=\n\w+:|\n\/\/|\nall\()/g, '// drums2: (disabled)\n');
+            : processed.replace(/drums2:([\s\S]*?)(?=\n\w+:|\n\/\/|\nall\(|$)/g, '// drums2: (disabled)\n');
 
         // Send to repl
         strudelReplRef.current.setCode(processed);
