@@ -1,122 +1,83 @@
 ﻿let originalLog = null;
-const logArray = [];
-const channelLevels = { drums: 0, bass: 0, chords: 0, lead: 0 };
+const levels = { drums: 0, bass: 0, chords: 0, lead: 0 };
 
-// Map note ranges to channels (approximate mapping)
-function detectChannel(logText) {
-    // Check for drum samples first (these don't always have notes)
-    const drumSamples = ['bd', 'sd', 'hh', 'kick', 'snare', 'hat', 'rim', 'cp', 'clap',
-        'mt', 'lt', 'ht', 'tom', 'crash', 'ride', 'oh', 'ch'];
-    for (const drum of drumSamples) {
-        if (logText.includes(`sound ${drum}`) || logText.includes(`s:${drum}`)) {
-            return 'drums';
-        }
+// Helper to dispatch updates to the UI
+const emitChange = () => {
+    const detail = Object.entries(levels).map(([ch, val]) => `${ch}:${val.toFixed(3)}`);
+    document.dispatchEvent(new CustomEvent("d3Data", { detail }));
+};
+
+function detectChannel(text) {
+    const lower = text.toLowerCase();
+
+    // 1. Check for Drums (regex matches "s:kick" or "sound kick")
+    if (/s:(bd|sd|hh|kick|snare|hat|rim|cp|clap|mt|lt|ht|tom|crash|ride|oh|ch)\b/.test(lower) ||
+        /sound (bd|sd|hh|kick|snare|hat|rim|cp|clap|mt|lt|ht|tom|crash|ride|oh|ch)\b/.test(lower)) {
+        return 'drums';
     }
 
-    const noteMatch = logText.match(/note:([a-g][#b]?\d)/i);
-    if (!noteMatch) {
-        // If no note but has sound/s: property, might be drums
-        if (logText.includes('sound') || logText.includes('s:')) {
-            return 'drums';
-        }
-        return null;
+    // 2. Check for Notes
+    const noteMatch = lower.match(/note:[a-g][#b]?(\d)/);
+    if (noteMatch) {
+        const octave = parseInt(noteMatch[1]);
+        if (octave <= 3 || lower.includes('s:bass') || lower.includes('s:sub')) return 'bass';
+        if (octave >= 5 || lower.includes('s:triangle') || lower.includes('s:sine')) return 'lead';
+        return 'chords'; // Default for middle octaves
     }
 
-    const note = noteMatch[1].toLowerCase();
-    const octave = parseInt(note.match(/\d/)[0]);
+    // 3. Fallbacks
+    if (lower.includes('sound') || lower.includes('s:')) return 'drums'; // Fallback for non-note sounds
+    if (lower.includes('s:supersaw') || lower.includes('s:sawtooth')) return 'chords';
 
-    // Lead: triangle wave or higher notes (octaves 5+)
-    if (logText.includes('s:triangle') || logText.includes('s:sine') || octave >= 5) {
-        return 'lead';
-    }
-
-    // Bass: lower notes (octaves 1-3) or bass synths
-    if (octave <= 3 || logText.includes('s:bass') || logText.includes('s:sub')) {
-        return 'bass';
-    }
-
-    // Chords: supersaw or sawtooth in middle range
-    if (logText.includes('s:supersaw') || logText.includes('s:sawtooth')) {
-        return 'chords';
-    }
-
-
-    // Octave 4 defaults to chords
-    if (octave === 4) {
-        return 'chords';
-    }
-
-    return 'chords'; // default
+    return null;
 }
 
 export default function console_monkey_patch() {
-    //If react multicalls this, do nothing
-    if (originalLog) return;
+    if (originalLog) return; // Prevent multiple patches
     originalLog = console.log;
-    //Overwrite console.log function
+
     console.log = function (...args) {
-        //Join args with space, default behaviour. Check for [hap], that's a strudel prefix
         const logText = args.join(" ");
-        if (logText.substring(0, 8) === "%c[hap] ") {
+
+        // Intercept Strudel logs starting with %c[hap]
+        if (logText.startsWith("%c[hap] ")) {
             const cleanLog = logText.replace("%c[hap] ", "");
-
-            // Extract gain value
             const gainMatch = cleanLog.match(/gain:([\d.]+)/);
+
             if (gainMatch) {
-                const gain = parseFloat(gainMatch[1]);
                 const channel = detectChannel(cleanLog);
-
                 if (channel) {
-                    // Update channel level with exponential smoothing for visual effect
-                    channelLevels[channel] = Math.max(channelLevels[channel] * 0.8, gain);
-
-                    // Create event with channel-specific data
-                    const event = new CustomEvent("d3Data", {
-                        detail: Object.entries(channelLevels).map(([ch, val]) => `${ch}:${val.toFixed(3)}`)
-                    });
-                    document.dispatchEvent(event);
+                    // Update level with smoothing and emit
+                    levels[channel] = Math.max(levels[channel] * 0.8, parseFloat(gainMatch[1]));
+                    emitChange();
                 }
             }
-
-            //If so, add it to the Array of values.
-            //Then remove the oldest values once we've hit 100.
-            logArray.push(cleanLog);
-            if (logArray.length > 100) {
-                logArray.splice(0, 1);
-            }
         }
+        // Always pass through to the real console
         originalLog.apply(console, args);
     };
 
-    // Decay channel levels over time
+    // Decay loop (runs every 50ms)
     setInterval(() => {
         let changed = false;
-        for (const channel in channelLevels) {
-            if (channelLevels[channel] > 0.01) {
-                channelLevels[channel] *= 0.92; // Decay factor
-                changed = true;
-            } else if (channelLevels[channel] !== 0) {
-                channelLevels[channel] = 0;
+        for (const ch in levels) {
+            if (levels[ch] > 0) {
+                levels[ch] = levels[ch] > 0.01 ? levels[ch] * 0.92 : 0;
                 changed = true;
             }
         }
-        if (changed) {
-            const event = new CustomEvent("d3Data", {
-                detail: Object.entries(channelLevels).map(([ch, val]) => `${ch}:${val.toFixed(3)}`)
-            });
-            document.dispatchEvent(event);
-        }
-    }, 50); // Update every 50ms for smooth decay
+        if (changed) emitChange();
+    }, 50);
 }
 
 export function getD3Data() {
-    return Object.entries(channelLevels).map(([ch, val]) => `${ch}:${val.toFixed(3)}`);
+    return Object.entries(levels).map(([ch, val]) => `${ch}:${val.toFixed(3)}`);
 }
 
-export function subscribe(eventName, listener) {
-    document.addEventListener(eventName, listener);
+export function subscribe(event, listener) {
+    document.addEventListener(event, listener);
 }
 
-export function unsubscribe(eventName, listener) {
-    document.removeEventListener(eventName, listener);
+export function unsubscribe(event, listener) {
+    document.removeEventListener(event, listener);
 }

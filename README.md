@@ -39,45 +39,5 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+### `Key Musical Differences`: Based on stranger tunes, created before, and used online resourecs to get the other beats
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-
-
-### `Key Musical Differences`: Based on effans work
-
-New key: D minor instead of C minor for a slightly darker feel
-Different tempo: 120 BPM vs 128 BPM - a touch slower and groovier
-Reimagined chord progression: Dm-F-C-G with different timing patterns
-New lead sounds: Using gm_lead_5_charang for a more ethereal quality
-Altered melody patterns: Reworked note sequences and rhythms
-Modified bass groove: Different syncopation and note placement
-Pad texture: Changed to gm_pad_2_warm for atmospheric warmth
-Adjusted effects: Different delay times, reverb levels, and filter settings
-New drum patterns: Restructured kick, snare, and hi-hat arrangements
