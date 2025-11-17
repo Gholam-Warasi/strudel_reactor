@@ -116,10 +116,6 @@ export default function App() {
                         </div>
                     </Col>
                 </Row>
-
-                <footer className="text-center text-muted mt-4">
-                    Built by Gholam {new Date().getFullYear()}
-                </footer>
             </Container>
         </div>
     );
