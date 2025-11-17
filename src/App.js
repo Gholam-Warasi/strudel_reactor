@@ -47,7 +47,7 @@ export default function App() {
     return (
         <div className="app-root" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
             <Navbar bg="light" expand="lg" className="shadow-sm mb-4">
-                <Container>
+                <Container fluid>
                     <Navbar.Brand href="#">Strudel Preprocessor</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -62,28 +62,23 @@ export default function App() {
 
             <Container fluid>
                 <Row>
-                    <Col lg={8} md={12} className="mb-4">
-                        <div className="card h-100 shadow-sm">
-                            <div className="card-body d-flex flex-column">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 className="card-title mb-0">Editor</h5>
-                                    <small className="text-muted">Live editing</small>
+                    {/* Left Column: D3 Graph (top) and Mixer Controls (bottom) */}
+                    <Col lg={4} md={12} className="mb-3">
+                        {/* D3 Graph - Top Left */}
+                        <div className="card shadow-sm mb-3">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 className="card-title mb-0">Live Log Graph</h5>
+                                    <small className="text-muted">Real-time</small>
                                 </div>
-
-                                <div style={{ flexGrow: 1, minHeight: 320 }}>
-                                    <Editor
-                                        value={editorCode}
-                                        onChange={(e) => setEditorCode(e.target.value)}
-                                        strudelReplRef={strudelReplRef}
-                                        controls={controls}
-                                    />
+                                <div style={{ height: 300 }}>
+                                    <D3Graph data={d3Data} />
                                 </div>
                             </div>
                         </div>
-                    </Col>
 
-                    <Col lg={4} md={12} className="mb-4">
-                        <div className="card shadow-sm mb-3">
+                        {/* Mixer Controls - Bottom Left */}
+                        <div className="card shadow-sm">
                             <div className="card-body">
                                 <div className="d-flex justify-content-between align-items-center mb-2">
                                     <h5 className="card-title mb-0">Mixer & Controls</h5>
@@ -97,20 +92,31 @@ export default function App() {
                                 />
                             </div>
                         </div>
+                    </Col>
 
-                        <div className="card shadow-sm">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 className="card-title mb-0">Live Log Graph</h5>
-                                    <small className="text-muted">Real-time</small>
+                    {/* Right Column: Editors */}
+                    <Col lg={8} md={12} className="mb-3">
+                        {/* Strudel Code Editor - Top Right */}
+                        <div className="card shadow-sm mb-3">
+                            <div className="card-body d-flex flex-column">
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 className="card-title mb-0">Strudel Code Editor</h5>
+                                    <small className="text-muted">Live editing</small>
                                 </div>
-                                <div style={{ height: 220 }}>
-                                    <D3Graph data={d3Data} />
+
+                                <div style={{ minHeight: 350 }}>
+                                    <Editor
+                                        value={editorCode}
+                                        onChange={(e) => setEditorCode(e.target.value)}
+                                        strudelReplRef={strudelReplRef}
+                                        controls={controls}
+                                    />
                                 </div>
                             </div>
                         </div>
                     </Col>
                 </Row>
+
                 <footer className="text-center text-muted mt-4">
                     Built by Gholam {new Date().getFullYear()}
                 </footer>

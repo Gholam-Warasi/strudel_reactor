@@ -104,14 +104,6 @@ function Controls({ controls, setControls, onSave, onLoad }) {
                 <input className="form-check-input" type="checkbox" id="showDrums2" name="show_drums2" checked={controls.show_drums2} onChange={handleChange} />
                 <label className="form-check-label" htmlFor="showDrums2">Show second drum layer</label>
             </div>
-
-            <div className="d-flex justify-content-end gap-2">
-                <button className="btn btn-outline-primary" onClick={onSave}>Save</button>
-                <label className="btn btn-outline-secondary mb-0">
-                    Load
-                    <input type="file" accept=".json" onChange={onLoad} className="d-none" />
-                </label>
-            </div>
         </div>
     );
 }
