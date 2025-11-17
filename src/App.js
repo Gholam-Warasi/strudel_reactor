@@ -46,15 +46,15 @@ export default function App() {
     };
 
     return (
-        <div className="app-root"> {/* Remove inline style, let CSS handle it */}
-            <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4"> {/* Use bg="dark" and variant="dark" */}
+        <div className="app-root">
+            <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4"> 
                 <Container fluid>
                     <Navbar.Brand href="#">
                         Strudel Preprocessor
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="ms-auto"> {/* Use ms-auto to push to the right */}
+                        <Nav className="ms-auto">
                             <Form className="d-flex align-items-center gap-2">
                                 <Button variant="success" size="sm" onClick={() => FileManager.save(controls)}>Save Preset</Button>
                                 <Button variant="outline-success" size="sm" onClick={triggerFileInput}>Load Preset</Button>
@@ -86,7 +86,7 @@ export default function App() {
                                         />
                                     </Tab>
                                     <Tab eventKey="graph" title="Levels">
-                                        <div style={{ height: 400, paddingTop: '20px' }}> {/* Give graph space */}
+                                        <div style={{ height: 400, paddingTop: '20px' }}> 
                                             <D3Graph data={d3Data} />
                                         </div>
                                     </Tab>
