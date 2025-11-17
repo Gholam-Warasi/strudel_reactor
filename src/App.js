@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
-import { Container, Row, Col, Button, Navbar, Nav, Form } from 'react-bootstrap';
+import { Container, Row, Col, Button, Navbar, Nav, Form, Tab, Tabs } from 'react-bootstrap';
 import Controls from './components/Controls';
 import Editor from './components/Editor';
 import D3Graph from './components/D3Graph';
@@ -13,6 +13,7 @@ export default function App() {
     const [editorCode, setEditorCode] = useState(jazzlike);
     const [d3Data, setD3Data] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [leftTabKey, setLeftTabKey] = useState('mixer');
 
     const [controls, setControls] = useState({
         crossfader: 0,
@@ -45,73 +46,65 @@ export default function App() {
     };
 
     return (
-        <div className="app-root" style={{ background: '#f8f9fa', minHeight: '100vh' }}>
-            <Navbar bg="light" expand="lg" className="shadow-sm mb-4">
+        <div className="app-root"> {/* Remove inline style, let CSS handle it */}
+            <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4"> {/* Use bg="dark" and variant="dark" */}
                 <Container fluid>
-                    <Navbar.Brand href="#">Strudel Preprocessor</Navbar.Brand>
+                    <Navbar.Brand href="#">
+                        {/*  */}
+                        Strudel Preprocessor
+                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Form className="d-flex align-items-center gap-2">
-                            <Button variant="outline-secondary" size="sm" onClick={() => FileManager.save(controls)}>Save</Button>
-                            <Button variant="outline-secondary" size="sm" onClick={triggerFileInput}>Load</Button>
-                            <input ref={fileInputRef} type="file" accept="application/json" onChange={handleLoad} className="d-none" />
-                        </Form>
+                        <Nav className="ms-auto"> {/* Use ms-auto to push to the right */}
+                            <Form className="d-flex align-items-center gap-2">
+                                <Button variant="success" size="sm" onClick={() => FileManager.save(controls)}>Save Preset</Button>
+                                <Button variant="outline-success" size="sm" onClick={triggerFileInput}>Load Preset</Button>
+                                <input ref={fileInputRef} type="file" accept="application/json" onChange={handleLoad} className="d-none" />
+                            </Form>
+                        </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
 
             <Container fluid>
                 <Row>
-                    {/* Left Column: D3 Graph (top) and Mixer Controls (bottom) */}
+                    {/* Left Column: Tabbed Controls */}
                     <Col lg={4} md={12} className="mb-3">
-                        {/* D3 Graph - Top Left */}
-                        <div className="card shadow-sm mb-3">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 className="card-title mb-0">Live Log Graph</h5>
-                                    <small className="text-muted">Real-time</small>
-                                </div>
-                                <div style={{ height: 300 }}>
-                                    <D3Graph data={d3Data} />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Mixer Controls - Bottom Left */}
                         <div className="card shadow-sm">
                             <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 className="card-title mb-0">Mixer & Controls</h5>
-                                    <small className="text-muted">Master</small>
-                                </div>
-                                <Controls
-                                    controls={controls}
-                                    setControls={setControls}
-                                    onSave={() => FileManager.save(controls)}
-                                    onLoad={handleLoad}
-                                />
+                                
+                                <Tabs
+                                    activeKey={leftTabKey}
+                                    onSelect={(k) => setLeftTabKey(k)}
+                                    id="control-tabs"
+                                    className="mb-3"
+                                    fill
+                                >
+                                    <Tab eventKey="mixer" title="Mixer">
+                                        <Controls
+                                            controls={controls}
+                                            setControls={setControls}
+                                        />
+                                    </Tab>
+                                    <Tab eventKey="graph" title="Levels">
+                                        <div style={{ height: 400, paddingTop: '20px' }}> {/* Give graph space */}
+                                            <D3Graph data={d3Data} />
+                                        </div>
+                                    </Tab>
+                                </Tabs>
                             </div>
                         </div>
                     </Col>
 
-                    {/* Right Column: Editors */}
                     <Col lg={8} md={12} className="mb-3">
-                        {/* Strudel Code Editor - Top Right */}
-                        <div className="card shadow-sm mb-3">
+                        <div className="card shadow-sm">
                             <div className="card-body d-flex flex-column">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 className="card-title mb-0">Strudel Code Editor</h5>
-                                    <small className="text-muted">Live editing</small>
-                                </div>
-
-                                <div style={{ minHeight: 350 }}>
-                                    <Editor
-                                        value={editorCode}
-                                        onChange={(e) => setEditorCode(e.target.value)}
-                                        strudelReplRef={strudelReplRef}
-                                        controls={controls}
-                                    />
-                                </div>
+                                <Editor
+                                    value={editorCode}
+                                    onChange={(e) => setEditorCode(e.target.value)}
+                                    strudelReplRef={strudelReplRef}
+                                    controls={controls}
+                                />
                             </div>
                         </div>
                     </Col>
