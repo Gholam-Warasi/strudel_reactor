@@ -1,8 +1,10 @@
-﻿import React, { useEffect, useRef, useCallback } from 'react';
+﻿import React, { useEffect, useRef, useCallback, useState } from 'react';
 import StrudelRepl from './StrudelRepl';
+import { Tab, Tabs, Button, ButtonGroup } from 'react-bootstrap';
 
 function Editor({ value, onChange, strudelReplRef, controls, onPreprocess }) {
     const debounceRef = useRef(null);
+    const [activeTab, setActiveTab] = useState('source');
 
     // Debounced preprocessing function
     const debouncedPreprocess = useCallback((code, ctrl) => {
@@ -122,23 +124,44 @@ function Editor({ value, onChange, strudelReplRef, controls, onPreprocess }) {
 
     return (
         <div className="editor-container">
-            {/* Playback Buttons */}
-            <div className="d-flex gap-2 mb-3">
-                <button onClick={handlePlay} className="btn btn-success flex-fill">Play</button>
-                <button onClick={handleStop} className="btn btn-danger flex-fill">Stop</button>
-                <button onClick={handleProcAndPlay} className="btn btn-primary flex-fill">Sync & Play</button>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">Code Editor</h5>
+                <ButtonGroup>
+                    <Button onClick={handleStop} variant="outline-danger">Stop</Button>
+                    <Button onClick={handlePlay} variant="outline-primary">Play</Button>
+                    <Button onClick={handleProcAndPlay} variant="success">Sync & Play</Button>
+                </ButtonGroup>
             </div>
-            <label htmlFor="proc-editor" className="form-label">Text to preprocess:</label>
-            <textarea
-                className="form-control"
-                rows="15"
-                id="proc-editor"
-                value={value}
-                onChange={onChange}
-                style={{ fontFamily: "monospace" }}
-            />
-            <hr />
-            <StrudelRepl ref={strudelReplRef} />
+
+            <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} id="editor-tabs" className="mb-0">
+                <Tab eventKey="source" title="Source">
+                    <textarea
+                        className="form-control"
+                        rows="20" 
+                        id="proc-editor"
+                        value={value}
+                        onChange={onChange}
+                        style={{
+                            fontFamily: "monospace",
+                            borderTopLeftRadius: 0, 
+                            borderTopRightRadius: 0,
+                            height: '60vh'
+                        }}
+                        placeholder="Type your strudel code here... (e.g., s('bd hh'))"
+                    />
+                </Tab>
+                <Tab eventKey="processed" title="Processed Output">
+                    <div style={{
+                        border: '1px solid #495057',
+                        borderTop: 'none',
+                        height: '60vh',
+                        padding: '10px',
+                        borderRadius: '0 0 .375rem .375rem'
+                    }}>
+                        <StrudelRepl ref={strudelReplRef} />
+                    </div>
+                </Tab>
+            </Tabs>
         </div>
     );
 }
