@@ -50,7 +50,6 @@ export default function App() {
             <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4"> {/* Use bg="dark" and variant="dark" */}
                 <Container fluid>
                     <Navbar.Brand href="#">
-                        {/*  */}
                         Strudel Preprocessor
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
