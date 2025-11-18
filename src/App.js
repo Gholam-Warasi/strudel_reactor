@@ -8,13 +8,17 @@ import { jazzlike } from './tunes';
 import FileManager from './components/FileManager';
 
 export default function App() {
-    const strudelReplRef = useRef(null);
-    const fileInputRef = useRef(null);
-    const [editorCode, setEditorCode] = useState(jazzlike);
-    const [d3Data, setD3Data] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [leftTabKey, setLeftTabKey] = useState('mixer');
+    // References to access DOM elements or components directly
+    const strudelReplRef = useRef(null); 
+    const fileInputRef = useRef(null);   
 
+    // State variables
+    const [editorCode, setEditorCode] = useState(jazzlike); 
+    const [d3Data, setD3Data] = useState([]);               
+    const [loading, setLoading] = useState(false);          
+    const [leftTabKey, setLeftTabKey] = useState('mixer');  
+
+    // Mixer/control settings
     const [controls, setControls] = useState({
         crossfader: 0,
         master_volume: 0.9,
@@ -30,15 +34,18 @@ export default function App() {
         show_drums2: false,
     });
 
+    // Effect runs once on mount to initialize console patching and D3 event subscription
     useEffect(() => {
-        const handleD3Data = (event) => setD3Data(event.detail);
-        console_monkey_patch();
-        subscribe('d3Data', handleD3Data);
-        return () => unsubscribe('d3Data', handleD3Data);
+        const handleD3Data = (event) => setD3Data(event.detail); 
+        console_monkey_patch(); 
+        subscribe('d3Data', handleD3Data); 
+        return () => unsubscribe('d3Data', handleD3Data); 
     }, []);
 
+    // Trigger click on hidden file input
     const triggerFileInput = () => fileInputRef.current?.click();
 
+    // Handle file selection and load settings
     const handleLoad = (e) => {
         const file = e?.target?.files?.[0];
         if (file)
@@ -47,31 +54,53 @@ export default function App() {
 
     return (
         <div className="app-root">
-            <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4"> 
+            {/* Top Navbar */}
+            <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4">
                 <Container fluid>
-                    <Navbar.Brand href="#">
-                        Strudel Preprocessor
-                    </Navbar.Brand>
+                    <Navbar.Brand href="#">Strudel Preprocessor</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
                             <Form className="d-flex align-items-center gap-2">
-                                <Button variant="success" size="sm" onClick={() => FileManager.save(controls)}>Save Preset</Button>
-                                <Button variant="outline-success" size="sm" onClick={triggerFileInput}>Load Preset</Button>
-                                <input ref={fileInputRef} type="file" accept="application/json" onChange={handleLoad} className="d-none" />
+                                {/* Save preset button */}
+                                <Button
+                                    variant="success"
+                                    size="sm"
+                                    onClick={() => FileManager.save(controls)}
+                                >
+                                    Save Preset
+                                </Button>
+
+                                {/* Load preset button */}
+                                <Button
+                                    variant="outline-success"
+                                    size="sm"
+                                    onClick={triggerFileInput}
+                                >
+                                    Load Preset
+                                </Button>
+
+                                {/* Hidden file input for loading JSON presets */}
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="application/json"
+                                    onChange={handleLoad}
+                                    className="d-none"
+                                />
                             </Form>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
 
+            {/* Main content area */}
             <Container fluid>
                 <Row>
-                    {/* Left Column: Tabbed Controls */}
+                    {/* Left Column: Tabbed Controls and D3 graph */}
                     <Col lg={4} md={12} className="mb-3">
                         <div className="card shadow-sm">
                             <div className="card-body">
-                                
                                 <Tabs
                                     activeKey={leftTabKey}
                                     onSelect={(k) => setLeftTabKey(k)}
@@ -79,14 +108,17 @@ export default function App() {
                                     className="mb-3"
                                     fill
                                 >
+                                    {/* Mixer controls tab */}
                                     <Tab eventKey="mixer" title="Mixer">
                                         <Controls
                                             controls={controls}
                                             setControls={setControls}
                                         />
                                     </Tab>
+
+                                    {/* D3 levels graph tab */}
                                     <Tab eventKey="graph" title="Levels">
-                                        <div style={{ height: 400, paddingTop: '20px' }}> 
+                                        <div style={{ height: 400, paddingTop: '20px' }}>
                                             <D3Graph data={d3Data} />
                                         </div>
                                     </Tab>
@@ -95,6 +127,7 @@ export default function App() {
                         </div>
                     </Col>
 
+                    {/* Right Column: Code editor */}
                     <Col lg={8} md={12} className="mb-3">
                         <div className="card shadow-sm">
                             <div className="card-body d-flex flex-column">
