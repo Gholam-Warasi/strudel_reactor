@@ -12,7 +12,7 @@ const D3Graph = ({ data }) => {
 
         const newPeaks = {};
 
-        // Parse incoming data (assumes format like "drums:0.8")
+        // Parse incoming data 
         data.forEach(entry => {
             if (typeof entry === 'string') {
                 const parts = entry.split(':');
