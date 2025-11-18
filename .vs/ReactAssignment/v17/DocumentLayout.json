@@ -3,28 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\src\\components\\editor.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\editor.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\src\\components\\d3graph.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\d3graph.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\src\\components\\controls.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\controls.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\src\\components\\filemanager.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\components\\filemanager.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|c:\\users\\ghola\\onedrive\\desktop\\web tech assignment\\strudel_reactor\\src\\tunes.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{1C538C04-AF09-44AC-9272-6DDEAA808F25}|ReactAssignment.esproj|solutionrelative:src\\tunes.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,88 +14,23 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "App.js",
-              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\App.js",
-              "RelativeDocumentMoniker": "src\\App.js",
-              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\App.js",
-              "RelativeToolTip": "src\\App.js",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-11-17T05:37:34.069Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "README.md",
-              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\README.md",
-              "RelativeDocumentMoniker": "README.md",
-              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\README.md",
-              "RelativeToolTip": "README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-11-17T05:38:04.047Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "FileManager.jsx",
-              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\FileManager.jsx",
-              "RelativeDocumentMoniker": "src\\components\\FileManager.jsx",
-              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\FileManager.jsx",
-              "RelativeToolTip": "src\\components\\FileManager.jsx",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2025-11-17T05:37:54.607Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Editor.jsx",
-              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\Editor.jsx",
-              "RelativeDocumentMoniker": "src\\components\\Editor.jsx",
-              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\Editor.jsx",
-              "RelativeToolTip": "src\\components\\Editor.jsx",
-              "ViewState": "AgIAAOMAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2025-11-17T05:37:31.616Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "D3Graph.jsx",
-              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\D3Graph.jsx",
-              "RelativeDocumentMoniker": "src\\components\\D3Graph.jsx",
-              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\D3Graph.jsx",
-              "RelativeToolTip": "src\\components\\D3Graph.jsx",
-              "ViewState": "AgIAAF8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2025-11-17T05:37:30.947Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Controls.jsx",
-              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\Controls.jsx",
-              "RelativeDocumentMoniker": "src\\components\\Controls.jsx",
-              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\components\\Controls.jsx",
-              "RelativeToolTip": "src\\components\\Controls.jsx",
-              "ViewState": "AgIAADUAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2025-11-17T05:37:30.186Z",
+              "DocumentIndex": 0,
+              "Title": "tunes.js",
+              "DocumentMoniker": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\tunes.js",
+              "RelativeDocumentMoniker": "src\\tunes.js",
+              "ToolTip": "C:\\Users\\ghola\\OneDrive\\Desktop\\Web Tech Assignment\\strudel_reactor\\src\\tunes.js",
+              "RelativeToolTip": "src\\tunes.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-18T08:52:50.459Z",
               "EditorCaption": ""
             }
           ]
