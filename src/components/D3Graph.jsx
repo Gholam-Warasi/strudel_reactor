@@ -1,34 +1,39 @@
 ﻿import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
+// D3Graph component: displays bar chart for audio channel peaks
 const D3Graph = ({ data }) => {
-    const svgRef = useRef(null);
-    const [peaks, setPeaks] = useState({ drums: 0, bass: 0, chords: 0, lead: 0 });
+    const svgRef = useRef(null); // Reference to the SVG DOM element
+    const [peaks, setPeaks] = useState({ drums: 0, bass: 0, chords: 0, lead: 0 }); // Store current peak values for channels
 
+    // Update peaks whenever new data comes in
     useEffect(() => {
-    if (!data || data.length === 0) return;
-    
-    const newPeaks = {};
-    
-    data.forEach(entry => {
+        if (!data || data.length === 0) return;
+
+        const newPeaks = {};
+
+        // Parse incoming data (assumes format like "drums:0.8")
+        data.forEach(entry => {
             if (typeof entry === 'string') {
                 const parts = entry.split(':');
-                const name = parts[0];
-                const value = parseFloat(parts[1]);
-            
+                const name = parts[0]; // channel name
+                const value = parseFloat(parts[1]); // channel value
+
+                // Only update known channels
                 if (peaks[name] !== undefined) {
                     newPeaks[name] = value;
                 }
             }
         });
-    
+
+        // Merge with previous peaks
         if (Object.keys(newPeaks).length > 0) {
             setPeaks({ ...peaks, ...newPeaks });
         }
     }, [data]);
 
+    // Draw the chart whenever peaks change
     useEffect(() => {
-        // Chart configuration
         const config = {
             width: 600,
             height: 220,
@@ -46,38 +51,39 @@ const D3Graph = ({ data }) => {
             lead: '#f39c12'
         };
 
-        // Clear and initialize SVG
+        // Select the SVG and clear previous content
         const svg = d3.select(svgRef.current);
-        svg.selectAll('*').remove();
+        svg.selectAll('*').remove(); // remove old bars/axes
         svg.attr('width', config.width).attr('height', config.height);
 
         const chartGroup = svg.append('g')
             .attr('transform', `translate(${config.margin.left}, ${config.margin.top})`);
 
-        // Create scales
+        // X scale: channels
         const xScale = d3.scaleBand()
             .domain(channels)
             .range([0, innerWidth])
             .padding(0.3);
 
+        // Y scale: values from 0 to 1
         const yScale = d3.scaleLinear()
             .domain([0, 1])
             .range([innerHeight, 0]);
 
-        // Add Y axis
+        // Y axis
         chartGroup.append('g')
             .call(d3.axisLeft(yScale)
                 .ticks(5)
-                .tickFormat(d => `${d * 100}%`))
+                .tickFormat(d => `${d * 100}%`)) // show as percentages
             .style('color', '#666');
 
-        // Add X axis
+        // X axis
         chartGroup.append('g')
             .attr('transform', `translate(0, ${innerHeight})`)
             .call(d3.axisBottom(xScale))
             .style('color', '#666');
 
-        // Draw bars and labels
+        // Draw bars for each channel
         channels.forEach(channel => {
             const value = peaks[channel] || 0;
             const barX = xScale(channel);
@@ -85,7 +91,7 @@ const D3Graph = ({ data }) => {
             const barWidth = xScale.bandwidth();
             const barHeight = innerHeight - barY;
 
-            // Bar
+            // Draw bar
             chartGroup.append('rect')
                 .attr('x', barX)
                 .attr('y', barY)
@@ -93,7 +99,7 @@ const D3Graph = ({ data }) => {
                 .attr('height', barHeight)
                 .attr('fill', colors[channel]);
 
-            // Label
+            // Add value label above the bar
             if (value > 0) {
                 chartGroup.append('text')
                     .attr('x', barX + barWidth / 2)
@@ -104,21 +110,15 @@ const D3Graph = ({ data }) => {
                     .text(`${(value * 100).toFixed(0)}%`);
             }
         });
-    }, [peaks]);
+    }, [peaks]); // redraw whenever peaks change
 
+    // Check if there is any data to display
     const hasData = Object.values(peaks).some(v => v > 0);
 
     return (
         <div style={{ width: '100%', height: '100%' }}>
+            {/* SVG container for the chart */}
             <svg ref={svgRef} style={{ display: 'block' }}></svg>
-            {!hasData && (
-                <div style={{
-                    textAlign: 'center',
-                    padding: '20px',
-                    color: '#999'
-                }}>
-                </div>
-            )}
         </div>
     );
 };
